@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Region {
+  id    String  @id @default(cuid())
+  label String
+  code  String?
+}
+
+model Upload {
+  id        String   @id @default(cuid())
+  excelData Json
+  prompt    String
+  region    String
+  createdAt DateTime @default(now())
+  Hasil     Hasil[]
+}
+
+model Hasil {
+  id       String @id @default(cuid())
+  uploadId String
+  summary  Json
+  akurasi  Float
+  upload   Upload @relation(fields: [uploadId], references: [id])
+}
+
+model User {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  password    String
+  nama_lengkap String
+  role        String   @default("PEGAWAI") // ADMIN or PEGAWAI
+  createdAt   DateTime @default(now())
+  logs        ActivityLog[]
+}
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  userId    String
+  action    String
+  details   String?
+  timestamp DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
