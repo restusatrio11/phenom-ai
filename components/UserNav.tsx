@@ -40,42 +40,47 @@ export default function UserNav({ user }: UserNavProps) {
     <div className="relative">
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-3 p-1.5 pl-4 pr-4 rounded-2xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition-all group shadow-2xl shadow-slate-900/20"
+        className="flex items-center gap-3 p-1.5 pl-4 pr-4 rounded-2xl bg-slate-900/60 backdrop-blur-xl border border-white/5 hover:border-emerald-500/30 transition-all group shadow-2xl shadow-emerald-900/10"
       >
         <div className="flex flex-col items-end hidden sm:flex">
-          <span className="text-xs font-bold text-slate-200 leading-none mb-0.5">{user.nama_lengkap || user.username}</span>
+          <span className="text-xs font-bold text-slate-200 leading-none mb-1 group-hover:text-emerald-400 transition-colors">{user.nama_lengkap || user.username}</span>
           <div className="flex items-center gap-1.5">
-            <span className={`text-[9px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded ${
-              user.role === 'ADMIN' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-700 text-slate-400'
+            <span className={`text-[8px] font-black uppercase tracking-[0.2em] px-2 py-0.5 rounded-md border ${
+              user.role === 'ADMIN' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-slate-800 text-slate-500 border-white/5'
             }`}>
               {user.role}
             </span>
           </div>
         </div>
-        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white shadow-lg group-hover:scale-105 transition-transform">
-          <User className="w-5 h-5" />
+        <div className="relative">
+          <div className="absolute inset-0 bg-emerald-500 blur opacity-20 group-hover:opacity-40 transition-opacity" />
+          <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center text-white shadow-lg shadow-emerald-900/40">
+            <User className="w-5 h-5" />
+          </div>
         </div>
-        <ChevronDown className={`w-4 h-4 text-slate-500 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+        <ChevronDown className={`w-4 h-4 text-slate-600 transition-transform duration-500 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
-          <div className="absolute right-0 mt-3 w-56 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl z-50 p-2 animate-in fade-in slide-in-from-top-2 duration-200">
-            <div className="px-3 py-2 mb-2">
-              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Identitas Sistem</p>
-              <div className="flex items-center gap-2 text-emerald-400">
-                <Shield className="w-3.5 h-3.5" />
-                <span className="text-xs font-bold">{user.role === 'ADMIN' ? 'Administrator' : 'Personil Terverifikasi'}</span>
+          <div className="absolute right-0 mt-4 w-64 bg-[#020617]/80 backdrop-blur-2xl border border-white/5 rounded-[24px] shadow-[0_0_50px_rgba(0,0,0,0.5)] z-50 p-3 animate-in fade-in slide-in-from-top-4 duration-300 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+            
+            <div className="px-4 py-4 mb-2 relative z-10">
+              <p className="text-[9px] font-black text-slate-500 uppercase tracking-[0.4em] mb-3">Operator ID</p>
+              <div className="flex items-center gap-3 text-emerald-400">
+                <Shield className="w-4 h-4" />
+                <span className="text-sm font-extrabold tracking-tight">{user.role === 'ADMIN' ? 'Level 01: Admin' : 'Authorized Personnel'}</span>
               </div>
-              <p className="text-[9px] text-slate-500 mt-1 truncate">{user.email}</p>
+              <p className="text-[10px] text-slate-500 mt-2 font-medium truncate opacity-60">{user.email}</p>
             </div>
-            <div className="h-px bg-slate-800 mx-2 mb-2" />
+            <div className="h-px bg-white/5 mx-2 mb-2" />
             <button
               onClick={handleLogout}
-              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-red-400 hover:bg-red-500/10 transition-colors"
+              className="w-full flex items-center gap-4 px-4 py-3.5 rounded-xl text-xs font-black uppercase tracking-widest text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-all active:scale-95 group/logout"
             >
-              <LogOut className="w-4 h-4" />
+              <LogOut className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
               Keluar Sesi
             </button>
           </div>

@@ -1,14 +1,29 @@
-import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET() {
+const API_BASE_URL = 'https://www.emsifa.com/api-wilayah-indonesia/api';
+
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const provinceId = searchParams.get('provinceId');
+
   try {
-    const regions = await prisma.region.findMany({
-      orderBy: { label: 'asc' },
-    });
-    return NextResponse.json({ success: true, data: regions });
-  } catch (error) {
+    if (provinceId) {
+      // Fetch Regencies/Cities for a specific province
+      const res = await fetch(`${API_BASE_URL}/regencies/${provinceId}.json`);
+      if (!res.ok) throw new Error('Gagal mengambil data kabupaten/kota');
+      const data = await res.json();
+      // Format to { id, name }
+      return NextResponse.json({ success: true, data });
+    } else {
+      // Fetch all Provinces
+      const res = await fetch(`${API_BASE_URL}/provinces.json`);
+      if (!res.ok) throw new Error('Gagal mengambil data provinsi');
+      const data = await res.json();
+      // Format to { id, name }
+      return NextResponse.json({ success: true, data });
+    }
+  } catch (error: any) {
     console.error('Fetch Regions Error:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

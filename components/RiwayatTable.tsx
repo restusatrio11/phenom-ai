@@ -139,11 +139,10 @@ export default function RiwayatTable({ data }: { data: RiwayatItem[] }) {
   return (
     <div className="space-y-4">
       {/* Search and Actions */}
-      {/* Search and Actions */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
-        <div className="relative flex-1 max-w-lg">
-          <div className="absolute left-4 top-1/2 -translate-y-1/2 p-1 bg-slate-50 rounded-lg">
-            <Search className="w-3.5 h-3.5 lg:w-4 lg:h-4 text-slate-400" />
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 px-2">
+        <div className="relative flex-1 max-w-lg group">
+          <div className="absolute left-5 top-1/2 -translate-y-1/2 p-1 bg-white/5 rounded-lg transition-colors group-focus-within:bg-emerald-500/10">
+            <Search className="w-4 h-4 text-slate-500 group-focus-within:text-emerald-400 transition-colors" />
           </div>
           <input
             type="text"
@@ -153,7 +152,7 @@ export default function RiwayatTable({ data }: { data: RiwayatItem[] }) {
               setSearchTerm(e.target.value);
               setCurrentPage(1);
             }}
-            className="w-full bg-white border border-slate-200 rounded-xl py-3.5 lg:py-4 pl-12 lg:pl-14 pr-6 text-sm font-bold text-slate-800 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500/50 transition-all shadow-sm"
+            className="w-full bg-slate-900/40 backdrop-blur-xl border border-white/5 rounded-2xl py-4 pl-16 pr-6 text-sm font-bold text-slate-200 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500/40 transition-all shadow-2xl placeholder:text-slate-600"
           />
         </div>
 
@@ -162,7 +161,7 @@ export default function RiwayatTable({ data }: { data: RiwayatItem[] }) {
             <button
               onClick={handleBulkDelete}
               disabled={isDeleting}
-              className="flex items-center gap-2 bg-white hover:bg-red-50 text-red-500 border border-red-100 px-4 lg:px-6 py-3.5 lg:py-4 rounded-xl text-[10px] lg:text-xs font-black uppercase tracking-widest transition-all animate-in fade-in zoom-in-95 shadow-sm"
+              className="flex items-center gap-3 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all animate-in zoom-in-95 active:scale-95 shadow-lg shadow-red-900/10"
             >
               <Trash2 className="w-4 h-4" />
               Hapus Terpilih ({selectedIds.length})
@@ -171,174 +170,183 @@ export default function RiwayatTable({ data }: { data: RiwayatItem[] }) {
         </div>
       </div>
 
-      {/* Table */}
-      <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xl shadow-slate-200/40">
-        <div className="overflow-x-auto no-scrollbar">
-          <table className="w-full text-left border-collapse min-w-[800px] lg:min-w-0">
-            <thead>
-              <tr className="bg-slate-50/50 border-b border-slate-100 text-slate-400 text-[9px] lg:text-[10px] tracking-[0.2em] font-black uppercase">
-                <th className="py-4 lg:py-6 px-4 lg:px-8 w-14 text-center">
-                  <button 
-                    onClick={toggleSelectAll}
-                    className="text-slate-300 hover:text-primary transition-colors"
-                  >
-                    {selectedIds.length === paginatedData.length && paginatedData.length > 0 ? (
-                      <CheckSquare className="w-5 h-5 lg:w-6 lg:h-6 text-primary" />
-                    ) : (
-                      <Square className="w-5 h-5 lg:w-6 lg:h-6" />
-                    )}
-                  </button>
-                </th>
-                <th className="py-4 lg:py-6 px-4">Waktu Pemindaian</th>
-                <th className="py-4 lg:py-6 px-4">Wilayah (Region)</th>
-                <th className="py-4 lg:py-6 px-4">Topik Investigasi</th>
-                <th className="py-4 lg:py-6 px-4">Akurasi</th>
-                <th className="py-4 lg:py-6 px-4 lg:px-8 text-right">Tindakan</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-50">
-              {paginatedData.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="py-16 lg:py-24 text-center">
-                    <div className="flex flex-col items-center gap-3 text-slate-400">
-                      <div className="w-16 h-16 lg:w-20 lg:h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4">
-                        <Search className="w-8 h-8 lg:w-10 lg:h-10 opacity-20" />
-                      </div>
-                      <p className="text-lg lg:text-xl font-black text-slate-800">Data tidak ditemukan</p>
-                      <p className="text-xs lg:text-sm font-medium">Coba gunakan kata kunci pencarian yang berbeda.</p>
-                    </div>
-                  </td>
-                </tr>
-              ) : (
-                paginatedData.map((item) => {
-                  const akurasiValue = item.akurasi ? Math.round(item.akurasi * 100) : (item.data?.globalAkurasi ? Math.round(item.data.globalAkurasi * 100) : 0);
-                  const akurasiColor = akurasiValue >= 80 ? 'text-emerald-600' : akurasiValue >= 50 ? 'text-yellow-600' : 'text-red-600';
-                  const isSelected = selectedIds.includes(item.id);
-
-                  return (
-                    <tr 
-                      key={item.id} 
-                      className={`hover:bg-slate-50/80 transition-all group ${isSelected ? 'bg-emerald-50/30' : ''}`}
+      {/* Table Container */}
+      <div className="relative group">
+        <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500/10 to-blue-500/10 rounded-[32px] blur opacity-20 group-hover:opacity-30 transition duration-1000" />
+        <div className="relative bg-slate-900/40 backdrop-blur-2xl border border-white/5 rounded-[32px] overflow-hidden shadow-2xl">
+          <div className="overflow-x-auto custom-scrollbar">
+            <table className="w-full text-left border-collapse min-w-[900px]">
+              <thead>
+                <tr className="bg-white/5 border-b border-white/5 text-slate-500 text-[10px] tracking-[0.25em] font-black uppercase">
+                  <th className="py-6 px-8 w-20 text-center">
+                    <button 
+                      onClick={toggleSelectAll}
+                      className="transition-all hover:scale-110 active:scale-90"
                     >
-                      <td className="py-4 lg:py-6 px-4 lg:px-8 text-center">
-                        <button 
-                          onClick={() => toggleSelect(item.id)}
-                          className={`${isSelected ? 'text-primary' : 'text-slate-200'} hover:text-primary transition-colors`}
-                        >
-                          {isSelected ? <CheckSquare className="w-5 h-5 lg:w-6 lg:h-6" /> : <Square className="w-5 h-5 lg:w-6 lg:h-6" />}
-                        </button>
-                      </td>
-                      <td className="py-4 lg:py-6 px-4 text-xs lg:text-sm font-bold text-slate-800">
-                        <div className="flex items-center gap-3">
-                          <div className="p-2 bg-slate-50 rounded-lg group-hover:bg-white transition-colors">
-                            <Calendar className="w-3.5 h-3.5 lg:w-4 lg:h-4 text-slate-400" />
-                          </div>
-                          <span className="whitespace-nowrap">
-                            {new Date(item.upload.createdAt).toLocaleDateString('id-ID', {
-                              day: 'numeric', month: 'short', year: 'numeric'
-                            })}
-                            <span className="ml-2 text-slate-400 font-medium">
-                              {new Date(item.upload.createdAt).toLocaleTimeString('id-ID', {
-                                hour: '2-digit', minute: '2-digit'
-                              })}
-                            </span>
-                          </span>
+                      {selectedIds.length === paginatedData.length && paginatedData.length > 0 ? (
+                        <CheckSquare className="w-6 h-6 text-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.3)]" />
+                      ) : (
+                        <Square className="w-6 h-6 text-slate-700 hover:text-slate-500" />
+                      )}
+                    </button>
+                  </th>
+                  <th className="py-6 px-4">Waktu Pemindaian</th>
+                  <th className="py-6 px-4">Wilayah</th>
+                  <th className="py-6 px-4">Topik Investigasi</th>
+                  <th className="py-6 px-4">Confidence</th>
+                  <th className="py-6 px-8 text-right">Aksi</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/5">
+                {paginatedData.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="py-24 text-center">
+                      <div className="flex flex-col items-center gap-6 text-slate-600">
+                        <div className="w-24 h-24 bg-white/5 rounded-[32px] flex items-center justify-center mb-2 border border-white/5 rotate-3">
+                          <Search className="w-10 h-10 opacity-30" />
                         </div>
-                      </td>
-                      <td className="py-4 lg:py-6 px-4 text-xs lg:text-sm">
-                        <div className="flex items-center gap-2">
-                          <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                          <span className="font-black text-slate-800">{item.upload.region}</span>
+                        <div>
+                          <p className="text-xl font-black text-white mb-2">Data Tidak Ditemukan</p>
+                          <p className="text-sm font-medium text-slate-500">Coba gunakan parameter pencarian yang berbeda.</p>
                         </div>
-                      </td>
-                      <td className="py-4 lg:py-6 px-4 text-xs lg:text-sm text-slate-500 font-medium max-w-[200px] lg:max-w-[300px] truncate" title={item.upload.prompt || '-'}>
-                        {item.upload.prompt || '-'}
-                      </td>
-                      <td className="py-4 lg:py-6 px-4 text-xs lg:text-sm">
-                        <div className="flex items-center gap-3">
-                          <div className="w-12 lg:w-16 h-1.5 lg:h-2 bg-slate-100 rounded-full overflow-hidden hidden sm:block shadow-inner">
-                            <div 
-                              className={`h-full ${akurasiValue >= 80 ? 'bg-emerald-500' : akurasiValue >= 50 ? 'bg-yellow-500' : 'bg-red-500'}`}
-                              style={{ width: `${akurasiValue}%` }}
-                            />
-                          </div>
-                          <span className={`font-black ${akurasiColor}`}>{akurasiValue}%</span>
-                        </div>
-                      </td>
-                      <td className="py-4 lg:py-6 px-4 lg:px-8 text-right">
-                        <div className="flex items-center justify-end gap-2 lg:gap-3 lg:opacity-0 lg:group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
-                          <button
-                            onClick={() => handleDeleteSingle(item.id)}
-                            disabled={isDeleting}
-                            className="inline-flex items-center justify-center w-9 h-9 lg:w-10 lg:h-10 rounded-xl text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all disabled:opacity-50 border border-transparent hover:border-red-100"
-                            title="Hapus"
+                      </div>
+                    </td>
+                  </tr>
+                ) : (
+                  paginatedData.map((item) => {
+                    const akurasiValue = item.akurasi ? Math.round(item.akurasi * 100) : (item.data?.globalAkurasi ? Math.round(item.data.globalAkurasi * 100) : 0);
+                    const akurasiColor = akurasiValue >= 80 ? 'text-emerald-400' : akurasiValue >= 50 ? 'text-amber-400' : 'text-rose-400';
+                    const isSelected = selectedIds.includes(item.id);
+
+                    return (
+                      <tr 
+                        key={item.id} 
+                        className={`hover:bg-white/5 transition-all group ${isSelected ? 'bg-emerald-500/5' : ''}`}
+                      >
+                        <td className="py-6 px-8 text-center">
+                          <button 
+                            onClick={() => toggleSelect(item.id)}
+                            className={`transition-all hover:scale-110 active:scale-90 ${isSelected ? 'text-emerald-400' : 'text-slate-800 hover:text-slate-600'}`}
                           >
-                            <Trash2 className="w-4 h-4" />
+                            {isSelected ? <CheckSquare className="w-6 h-6" /> : <Square className="w-6 h-6" />}
                           </button>
-                          <Link 
-                            href={`/analisis/${item.id}`}
-                            className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-700 hover:text-white transition-all bg-white hover:bg-slate-900 px-4 lg:px-6 py-2 lg:py-3 rounded-xl border border-slate-200 hover:border-slate-900 shadow-sm active:scale-95 whitespace-nowrap"
-                          >
-                            Detail
-                          </Link>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Pagination Controls */}
-        {totalPages > 1 && (
-          <div className="px-8 py-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-6 bg-slate-50/30">
-            <p className="text-[11px] text-slate-400 font-black uppercase tracking-widest">
-              Data <span className="text-slate-800">{startIndex + 1}</span> - <span className="text-slate-800">{Math.min(startIndex + itemsPerPage, filteredData.length)}</span> / {filteredData.length}
-            </p>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setCurrentPage(1)}
-                disabled={currentPage === 1}
-                className="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-primary disabled:opacity-30 disabled:hover:text-slate-400 transition-all shadow-sm active:scale-95"
-              >
-                <ChevronsLeft className="w-5 h-5" />
-              </button>
-              <button
-                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                disabled={currentPage === 1}
-                className="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-primary disabled:opacity-30 disabled:hover:text-slate-400 transition-all shadow-sm active:scale-95"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-              
-              <div className="flex items-center px-6">
-                <span className="text-xs font-black text-slate-800">
-                  {currentPage} <span className="mx-1 opacity-20">/</span> {totalPages}
-                </span>
-              </div>
-
-              <button
-                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                disabled={currentPage === totalPages}
-                className="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-primary disabled:opacity-30 disabled:hover:text-slate-400 transition-all shadow-sm active:scale-95"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
-              <button
-                onClick={() => setCurrentPage(totalPages)}
-                disabled={currentPage === totalPages}
-                className="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-primary disabled:opacity-30 disabled:hover:text-slate-400 transition-all shadow-sm active:scale-95"
-              >
-                <ChevronsRight className="w-5 h-5" />
-              </button>
-            </div>
+                        </td>
+                        <td className="py-6 px-4">
+                          <div className="flex items-center gap-4">
+                            <div className="p-2.5 bg-slate-800 rounded-xl border border-white/5 group-hover:border-emerald-500/30 transition-colors">
+                              <Calendar className="w-4 h-4 text-slate-500 group-hover:text-emerald-400 transition-colors" />
+                            </div>
+                            <div className="flex flex-col">
+                              <span className="text-sm font-bold text-slate-200">
+                                {new Date(item.upload.createdAt).toLocaleDateString('id-ID', {
+                                  day: 'numeric', month: 'short', year: 'numeric'
+                                })}
+                              </span>
+                              <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                                {new Date(item.upload.createdAt).toLocaleTimeString('id-ID', {
+                                  hour: '2-digit', minute: '2-digit'
+                                })}
+                              </span>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="py-6 px-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
+                            <span className="text-sm font-black text-slate-100">{item.upload.region}</span>
+                          </div>
+                        </td>
+                        <td className="py-6 px-4">
+                          <p className="text-sm font-medium text-slate-400 truncate max-w-[240px] italic" title={item.upload.prompt || '-'}>
+                            "{item.upload.prompt || '-'}"
+                          </p>
+                        </td>
+                        <td className="py-6 px-4">
+                          <div className="flex items-center gap-4">
+                            <div className="w-16 h-1.5 bg-slate-800 rounded-full overflow-hidden hidden sm:block border border-white/5">
+                              <div 
+                                className={`h-full transition-all duration-1000 ${akurasiValue >= 80 ? 'bg-emerald-500' : akurasiValue >= 50 ? 'bg-amber-500' : 'bg-rose-500'}`}
+                                style={{ width: `${akurasiValue}%` }}
+                              />
+                            </div>
+                            <span className={`text-xs font-black tracking-tighter ${akurasiColor}`}>{akurasiValue}%</span>
+                          </div>
+                        </td>
+                        <td className="py-6 px-8 text-right">
+                          <div className="flex items-center justify-end gap-3 lg:opacity-0 lg:group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
+                            <button
+                              onClick={() => handleDeleteSingle(item.id)}
+                              disabled={isDeleting}
+                              className="w-10 h-10 rounded-xl bg-slate-800 text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 border border-white/5 hover:border-rose-500/20 transition-all disabled:opacity-50 active:scale-90"
+                            >
+                              <Trash2 className="w-4 h-4 mx-auto" />
+                            </button>
+                            <Link 
+                              href={`/analisis/${item.id}`}
+                              className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-emerald-400 hover:text-white transition-all bg-emerald-500/5 hover:bg-emerald-600 px-6 py-3 rounded-xl border border-emerald-500/20 hover:border-emerald-600 shadow-xl active:scale-95 whitespace-nowrap"
+                            >
+                              Open Node
+                            </Link>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
           </div>
-        )}
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="px-10 py-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-8 bg-white/5 relative z-10">
+              <p className="text-[10px] text-slate-500 font-black uppercase tracking-[0.3em]">
+                Page <span className="text-emerald-400">{currentPage}</span> of <span className="text-slate-300">{totalPages}</span>
+                <span className="mx-4 text-slate-800">|</span>
+                Total <span className="text-slate-300">{filteredData.length}</span> Records
+              </p>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => setCurrentPage(1)}
+                  disabled={currentPage === 1}
+                  className="p-3 bg-slate-800 border border-white/5 rounded-xl text-slate-500 hover:text-emerald-400 disabled:opacity-20 transition-all active:scale-90"
+                >
+                  <ChevronsLeft className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  disabled={currentPage === 1}
+                  className="p-3 bg-slate-800 border border-white/5 rounded-xl text-slate-500 hover:text-emerald-400 disabled:opacity-20 transition-all active:scale-90"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                
+                <div className="w-12 h-12 flex items-center justify-center bg-emerald-500/10 rounded-xl border border-emerald-500/20">
+                  <span className="text-xs font-black text-emerald-400">{currentPage}</span>
+                </div>
+
+                <button
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  disabled={currentPage === totalPages}
+                  className="p-3 bg-slate-800 border border-white/5 rounded-xl text-slate-500 hover:text-emerald-400 disabled:opacity-20 transition-all active:scale-90"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={() => setCurrentPage(totalPages)}
+                  disabled={currentPage === totalPages}
+                  className="p-3 bg-slate-800 border border-white/5 rounded-xl text-slate-500 hover:text-emerald-400 disabled:opacity-20 transition-all active:scale-90"
+                >
+                  <ChevronsRight className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Confirmation Modal */}
+
       <Modal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}

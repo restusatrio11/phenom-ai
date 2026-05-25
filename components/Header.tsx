@@ -12,7 +12,7 @@ export default function Header({ user }: { user: any }) {
   if (pathname === '/login') return null;
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-[#f8faf9]/80 backdrop-blur-xl px-6 lg:px-16 py-6 lg:py-8">
+    <header className="sticky top-0 z-40 w-full bg-[#020617]/40 backdrop-blur-xl px-6 lg:px-16 py-6 lg:py-8 border-b border-white/5">
       <div className="flex items-center justify-end">
         <UserNav user={user} />
       </div>

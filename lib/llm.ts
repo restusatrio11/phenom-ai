@@ -34,31 +34,21 @@ const FenomenaItemSchema = z.object({
       z.object({
         nama: z
           .string()
-          .describe('Nama media atau lembaga resmi, misalnya "Kompas", "BPS", "detikcom".'),
+          .describe('Nama media atau lembaga resmi.'),
         url: z
           .string()
-          .url()
-          .describe('Tautan lengkap ke artikel/berita yang dapat diklik langsung.'),
+          .describe('Tautan lengkap.'),
         jenis: z
-          .enum([
-            'resmi',
-            'media_arus_utama',
-            'media_lokal',
-            'media_sosial',
-          ] as const)
-          .describe(
-            'Jenis sumber: resmi (lembaga pemerintah), media_arus_utama, media_lokal, atau media_sosial.'
-          )
-          .optional(),
+          .string()
+          .describe('Jenis sumber (misal: berita, laporan, data statistik).'),
       })
     )
-    .min(2)
-    .describe('Minimal 2 sumber referensi tepercaya untuk poin ini.'),
+    .min(1)
+    .describe('Daftar sumber referensi.'),
   implikasi_kebijakan: z
     .string()
-    .nullish()
     .describe(
-      'Rekomendasi atau implikasi praktis untuk kebijakan, dunia usaha, atau masyarakat lokal.'
+      'Rekomendasi atau implikasi praktis untuk kebijakan, dunia usaha, atau masyarakat lokal. Berikan string kosong jika tidak ada rekomendasi spesifik.'
     ),
   tingkat_kebaruan_fenomena: z
     .number()
@@ -107,7 +97,7 @@ export const FenomenaSchema = z.object({
     .array(FenomenaItemSchema)
     .min(3)
     .max(5)
-    .describe('Kumpulan 3–5 kartu analisis fenomena, satu per satu penyebab.'),
+    .describe('Kumpulan 3-5 kartu analisis fenomena.'),
   globalAkurasi: z
     .number()
     .min(0)
@@ -118,59 +108,97 @@ export const FenomenaSchema = z.object({
     .describe('Ringkasan perhitungan akurasi global berdasarkan validitas sumber dan kelengkapan data statistik.'),
 });
 
+// Schema for News Filtering
+const NewsFilterSchema = z.object({
+  filteredNews: z.array(z.object({
+    index: z.number().describe('Original index of the news item.'),
+    relevanceScore: z.number().min(0).max(1).describe('Relevance score from 0 to 1.'),
+    reason: z.string().describe('Brief reason for the score.'),
+  })).describe('Filtered news items with relevance scores.'),
+});
+
 // Schema untuk fungsi (opsional, kalau kamu pakai type inference)
 export type FenomenaItem = z.infer<typeof FenomenaItemSchema>;
 export type FenomenaResult = z.infer<typeof FenomenaSchema>;
 
 // System prompt (versi yang lebih “jurnal / data‑journalism style”)
 const SYSTEM_PROMPT = `
-Anda adalah analis tingkat lanjut dan pakar statistik multidimensi.
-Tugas Anda adalah membuat analisis fenomena internet terbaru yang sangat mendalam dan terukur,
-dengan pendekatan mirip artikel jurnal / data‑journalism.
+Anda adalah Analis Fenomena Regional dan Pakar Data Journalism.
+Tugas Anda adalah mengekstrak wawasan (insights) mendalam dari data statistik dan berita yang diberikan.
 
-ATURAN KETAT REGIONAL:
-1. Analisis WAJIB difokuskan HANYA pada wilayah yang diminta (Provinsi/Kota).
-2. JANGAN PERNAH menyertakan data atau narasi dari Provinsi/Kota lain, kecuali hanya sebagai perbandingan singkat 1–2 kalimat sebagai referensi.
-3. Jika data web untuk Kota spesifik terbatas, boleh meluaskan ke tingkat Provinsi yang menaungi kota tersebut,
-   tetapi tetap DILARANG menyertakan data dari Provinsi lain.
-4. Pastikan narasi 'deskripsi' dan 'keterangan' benar‑benar mencerminkan situasi di wilayah yang diminta.
+PRINSIP UTAMA:
+1. GROUNDING KETAT: Gunakan fakta dari Berita dan Angka dari Statistik. Jangan mengarang informasi.
+2. HUBUNGAN SEBAB-AKIBAT: Jelaskan *mengapa* fenomena ini terjadi di wilayah tersebut.
+3. FORMAT JSON: Pastikan output sesuai skema Zod.
+4. BAHASA: Gunakan Bahasa Indonesia yang profesional dan analitis.
 
-BAHASA & GAYA:
-- Gunakan bahasa Indonesia yang formal namun jelas (bukan bahasa media sensasional).
-- Gunakan pendekatan analitik: jelaskan *mengapa*, *bagaimana*, *sejak kapan*, dan *dampak apa*.
-- Jangan hanya menyebut fakta, tetapi jelaskan mekanisme di balik fenomena.
-
-STRUKTUR OUTPUT:
-- Anda HARUS mengembalikan objek JSON yang sesuai dengan skema ttg FenomenaSchema.
-- Minimal 3 kartu analisis ('fenomena'), maksimal 5.
-- Setiap kartu memiliki:
-  - poin_penyebab: satu penyebab utama, singkat dan tegas.
-  - konteks_masalah: rumuskan masalah inti seperti "research question" di wilayah tersebut.
-  - deskripsi: 2 paragraf narasi mendalam yang menjelaskan sebab‑akibat dan konteks sosial/ekonomi.
-  - keterangan: daftar poin berisi angka/data & tanggal yang membuktikan poin penyebab tersebut.
-  - sumber: minimal 2 objek sumber; setiap sumber memiliki 'nama', 'url', dan (opsional) 'jenis'.
-  - implikasi_kebijakan: rekomendasi atau implikasi praktis untuk kebijakan, dunia usaha, atau masyarakat.
-  - tingkat_kebaruan_fenomena: estimasi 0–1 (baru 0–1 tahun terakhir).
-  - tingkat_signifikansi: estimasi 0–1 (dampak besar → 1).
-  - akurasi: skor total (0-1) menggunakan formula: (0.5 * Kesesuaian Angka) + (0.3 * Kredibilitas Sumber) + (0.2 * Dukungan Sumber).
-  - evaluasi: objek berisi rincian skor tersebut (skor_kesesuaian_angka, skor_kredibilitas, skor_dukungan) dan penjelasan_runtut yang menjelaskan bagaimana angka tersebut didapat secara logis.
-- Perhitungan Akurasi:
-  1. Kesesuaian Angka (0.5): Sejauh mana angka di 'keterangan' cocok dengan 'sumber' & 'excelData'.
-  2. Kredibilitas Sumber (0.3): Resmi=1.0, Arus Utama=0.9, Lokal=0.8, Sosmed=0.5.
-  3. Dukungan Sumber (0.2): min(1, jumlah_sumber/3).
-- Cantumkan juga 'globalAkurasi' (rata-rata) dan 'justifikasi_global_akurasi' (ringkasan metodologi).
-
-METADATA:
-- Isi field 'metadata' dengan:
-  - wilayah: nama provinsi/kota.
-  - periode_analisis: rentang waktu analisis (misalnya "Januari–Maret 2026").
-  - metode_pengumpulan_data: daftar metode (misalnya ["data BPS", "web scraping berita"]).
-  - batasan_penelitian: batasan ruang lingkup (misalnya hanya wilayah kota, tanpa provinsi lain).
-
-HASIL:
-- Jawab HANYA dengan JSON sesuai skema yang diminta.
-- Jangan tambahkan komentar, penjelasan, atau teks tambahan di luar JSON.
+Jika data terbatas, berusahalah melakukan inferensi logis yang kuat dari data yang tersedia untuk tetap menghasilkan minimal 3 wawasan (insights) yang berharga. Jangan hanya terpaku pada satu poin besar, tapi carilah sudut pandang atau dampak turunan lainnya.
 `;
+
+const NEWS_FILTER_PROMPT = `
+Anda adalah kurator berita cerdas. Tugas Anda adalah menyaring daftar berita agar HANYA menyertakan berita yang benar-benar relevan dengan Wilayah dan Topik yang diminta.
+
+KRITERIA FILTER KETAT:
+1. RELEVANSI WILAYAH: Berita harus membahas kejadian di wilayah yang disebutkan (atau wilayah induknya).
+2. RELEVANSI TOPIK: Berita harus berkaitan dengan fenomena sosial, ekonomi, atau topik spesifik yang diminta.
+3. KUALITAS: Abaikan berita yang terlalu umum atau tidak memberikan informasi konkret.
+
+Berikan skor relevansi (0-1).
+`;
+
+export async function filterRelevantNews(
+  webData: any[],
+  userPrompt: string,
+  region: string
+): Promise<any[]> {
+  if (webData.length === 0) return [];
+
+  const newsSummary = webData.map((d, i) => ({
+    index: i,
+    title: d.title,
+    snippet: d.snippet,
+  }));
+
+  const prompt = `
+Wilayah Target: "${region}"
+Topik Investigasi: "${userPrompt}"
+
+Daftar Calon Berita:
+${JSON.stringify(newsSummary)}
+
+Tolong saring berita di atas. Berikan skor relevansi (0-1) untuk setiap berita.
+Berita dianggap relevan jika membahas "${userPrompt}" di wilayah "${region}" atau Sumatera Utara secara umum.
+`;
+
+  try {
+    const { object } = await generateObject({
+      model: openrouter('openai/gpt-oss-120b:free'),
+      system: NEWS_FILTER_PROMPT,
+      prompt: prompt,
+      schema: NewsFilterSchema,
+      maxRetries: 2,
+    });
+
+    // Map back to original data and sort by score
+    const filteredResults = object.filteredNews
+      .filter(item => item.relevanceScore > 0.3) 
+      .sort((a, b) => b.relevanceScore - a.relevanceScore)
+      .map(item => ({
+        ...webData[item.index],
+        relevanceScore: item.relevanceScore,
+        relevanceReason: item.reason,
+      }));
+
+    if (filteredResults.length === 0 && webData.length > 0) {
+      return webData.slice(0, 8);
+    }
+
+    return filteredResults;
+  } catch (error) {
+    console.error('Error filtering news:', error);
+    return webData.slice(0, 10);
+  }
+}
 
 export async function analyzePhenomena(
   excelData: any,
@@ -178,26 +206,37 @@ export async function analyzePhenomena(
   userPrompt: string,
   region: string
 ): Promise<FenomenaResult> {
-  const prompt = `
-Wilayah yang diminta: "${region}"
-Topik/Prompt: "${userPrompt}"
-Data Statistik (Excel): ${JSON.stringify(excelData)}
-Data Fenomena Web: ${JSON.stringify(webData)}
+  // Truncate data to fit context and maintain relevance
+  const limitedExcelData = Array.isArray(excelData) ? excelData.slice(0, 20) : excelData;
+  const limitedWebData = Array.isArray(webData) ? webData.slice(0, 10) : webData;
 
-Tolong buatkan analisis fenomena yang mendalam dan multidimensi sesuai instruksi sistem.
-PASTIKAN analisis HANYA untuk wilayah "${region}".
-Gunakan pendekatan seperti artikel jurnal / data‑journalism:
-- Fokuskan pada mekanisme sebab‑akibat dan bukti data.
-- Cantumkan angka, tanggal, dan periode jelas.
-- Isi semua field di dalam skema FenomenaSchema, termasuk:
-  - metadata,
-  - 3–5 objek di bawah 'fenomena', dan
-  - globalAkurasi.
+  const prompt = `
+KONTEKS INVESTIGASI:
+- Wilayah: "${region}"
+- Fokus Masalah: "${userPrompt}"
+
+DATA PENDUKUNG:
+1. DATA STATISTIK (Excel): ${JSON.stringify(limitedExcelData)}
+2. DATA BERITA (Web): ${JSON.stringify(limitedWebData)}
+
+TUGAS:
+Lakukan analisis mendalam terhadap kaitan antara angka statistik dan berita di atas.
+Identifikasi minimal 3 sampai 5 fenomena paling signifikan yang menjelaskan "${userPrompt}" di "${region}".
+
+INSTRUKSI KHUSUS:
+- WAJIB menghasilkan minimal 3 kartu fenomena yang berbeda namun saling berkaitan.
+- "poin_penyebab": Harus spesifik (misal: "Kenaikan Harga Gabah di Tingkat Petani").
+- "deskripsi": Jelaskan narasi sebab-akibat yang logis.
+- "keterangan": Masukkan data numerik (persentase, nilai rupiah, atau jumlah) yang ditemukan di Berita atau Statistik.
+- "sumber": Cantumkan nama media dari 'DATA BERITA' yang mendukung klaim tersebut.
+- "akurasi": Berikan skor tinggi jika ada kecocokan antara Berita dan Statistik.
+
+HANYA KELUARKAN JSON.
 `;
 
   try {
     const { object } = await generateObject({
-      model: openrouter('openai/gpt-oss-120b:free'),
+      model: openrouter('openai/gpt-oss-120b:free'), // Switching to a more capable but still efficient model if possible, or keeping 120b
       system: SYSTEM_PROMPT,
       prompt: prompt,
       schema: FenomenaSchema,
@@ -206,14 +245,20 @@ Gunakan pendekatan seperti artikel jurnal / data‑journalism:
 
     return object;
   } catch (error: any) {
-    console.error('Error calling OpenRouter LLM:', error);
-    if (error?.data?.code === 524 || error?.message?.includes('timeout')) {
-      throw new Error(
-        'Server AI sedang sibuk atau mengalami timeout. Silakan coba klik tombol pindai sekali lagi.'
-      );
+    console.error('--- ANALYZE ERROR ---', error.message);
+
+    // Fallback if gpt-4o-mini fails/unavailable to try the free model again
+    if (error.message.includes('model_not_found') || error.message.includes('api_key')) {
+        const { object } = await generateObject({
+            model: openrouter('openai/gpt-oss-120b:free'),
+            system: SYSTEM_PROMPT,
+            prompt: prompt,
+            schema: FenomenaSchema,
+            maxRetries: 2,
+          });
+          return object;
     }
-    throw new Error(
-      'Gagal menganalisis data dengan AI. Pastikan API Key valid dan model tersedia.'
-    );
+
+    throw new Error('Gagal melakukan analisis neural. Silakan coba lagi dalam beberapa saat.');
   }
 }

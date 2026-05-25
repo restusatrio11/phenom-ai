@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { scrapeWebData } from '@/lib/scraper';
+import { filterRelevantNews } from '@/lib/llm';
 
 export async function POST(req: NextRequest) {
   try {
@@ -19,7 +20,10 @@ export async function POST(req: NextRequest) {
     }
 
     const query = uploadRecord.prompt || 'fenomena sosial ekonomi';
-    const webData = await scrapeWebData(query, uploadRecord.region);
+    const rawWebData = await scrapeWebData(query, uploadRecord.region);
+    
+    // Filtering with AI to improve accuracy
+    const webData = await filterRelevantNews(rawWebData, query, uploadRecord.region);
 
     return NextResponse.json({ success: true, webData });
   } catch (error: any) {

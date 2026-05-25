@@ -27,141 +27,152 @@ export default async function AnalisisResultPage({ params }: { params: Promise<{
   const globalJustification = summaryData?.justifikasi_global_akurasi || "";
 
   return (
-    <div className="container mx-auto px-4 py-12 max-w-5xl">
-      <div className="mb-10 flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
-        <div>
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-8 h-1 bg-primary rounded-full" />
-            <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary/70">Analysis Report</span>
+    <div className="container mx-auto px-4 py-12 max-w-5xl animate-in fade-in duration-1000">
+      <div className="mb-12 flex flex-col md:flex-row items-start md:items-end justify-between gap-8">
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-1 bg-gradient-to-r from-emerald-500 to-transparent rounded-full" />
+            <span className="text-[10px] font-black uppercase tracking-[0.5em] text-emerald-500/80">Analysis Report</span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-black mb-3 text-slate-900 tracking-tight">
-            Hasil Analisis Fenomena
+          <h1 className="text-4xl md:text-6xl font-extrabold text-white tracking-tighter">
+            Laporan <span className="bg-gradient-to-r from-emerald-400 to-emerald-600 bg-clip-text text-transparent">Fenomena</span>
           </h1>
-          <p className="text-slate-500 font-medium">
-            Wilayah Investigasi: <span className="text-primary font-bold px-2 py-1 bg-emerald-50 rounded-lg">{hasil.upload.region}</span>
-          </p>
+          <div className="flex items-center gap-3">
+            <span className="text-slate-500 text-sm font-medium uppercase tracking-widest">Wilayah Investigasi:</span>
+            <span className="text-emerald-400 font-bold px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-sm shadow-lg shadow-emerald-900/10">{hasil.upload.region}</span>
+          </div>
         </div>
-        <div className="flex items-center gap-4 bg-white p-2 rounded-2xl shadow-sm border border-slate-100">
+        <div className="flex items-center gap-6 bg-slate-900/60 backdrop-blur-xl border border-white/5 p-3 rounded-[24px] shadow-2xl">
           <ExportButton data={fenomenaList} region={hasil.upload.region} />
-          <div className="h-10 w-[1px] bg-slate-100 mx-2" />
-          <div className="flex items-center gap-3 pr-4">
+          <div className="h-12 w-[1px] bg-white/5 mx-2" />
+          <div className="flex items-center gap-5 pr-4">
             <div className="text-right">
-              <span className="block text-[9px] text-slate-400 uppercase tracking-widest font-bold">Akurasi Global</span>
-              <div className="flex items-center justify-end">
-                <span className="block text-lg font-black text-slate-800">{Math.round(hasil.akurasi * 100)}%</span>
+              <span className="block text-[9px] text-slate-500 uppercase tracking-widest font-black mb-1">Akurasi Global</span>
+              <div className="flex items-center justify-end gap-1">
+                <span className="block text-2xl font-black text-white">{Math.round(hasil.akurasi * 100)}%</span>
                 <AccuracyDetail justification={globalJustification} label="Metodologi Global" />
               </div>
             </div>
-            <AccuracyRing accuracy={hasil.akurasi} />
+            <div className="relative group/global">
+              <div className="absolute inset-0 bg-emerald-500/20 rounded-full blur-lg opacity-0 group-hover/global:opacity-100 transition-opacity" />
+              <AccuracyRing accuracy={hasil.akurasi} />
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="space-y-8">
+      <div className="space-y-12">
         {fenomenaList.length === 0 ? (
-          <div className="bg-white border border-slate-200 rounded-2xl p-16 text-center shadow-sm">
-            <div className="mb-6">
-              <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                <BarChart3 className="w-10 h-10 text-slate-300" />
+          <div className="bg-slate-900/40 backdrop-blur-xl border border-white/5 rounded-[40px] p-24 text-center shadow-2xl relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/5 to-transparent pointer-events-none" />
+            <div className="relative z-10">
+              <div className="w-24 h-24 bg-slate-800 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-white/5 rotate-3">
+                <BarChart3 className="w-12 h-12 text-slate-600" />
               </div>
-              <h2 className="text-xl font-bold text-slate-800 mb-2">Data fenomena tidak ditemukan</h2>
-              <p className="text-slate-500 max-w-sm mx-auto text-sm leading-relaxed">
-                Maaf, sistem tidak dapat menemukan pola fenomena yang signifikan dari data yang Anda berikan.
+              <h2 className="text-2xl font-black text-white mb-3 tracking-tight">Data fenomena tidak ditemukan</h2>
+              <p className="text-slate-500 max-w-sm mx-auto text-base font-medium leading-relaxed mb-10">
+                Maaf, unit inteligensi kami tidak dapat menemukan pola fenomena yang signifikan dari parameter yang Anda berikan.
               </p>
+              <Link href="/" className="inline-flex items-center gap-3 bg-emerald-600 hover:bg-emerald-500 text-white font-black py-4 px-10 rounded-2xl transition-all shadow-xl shadow-emerald-900/20 active:scale-95 uppercase tracking-widest text-xs">
+                Inisialisasi Ulang
+              </Link>
             </div>
-            <Link href="/" className="inline-flex items-center gap-2 bg-primary hover:bg-emerald-600 text-white font-bold py-3 px-8 rounded-xl transition-all shadow-lg shadow-emerald-200">
-              Coba Pindai Ulang
-            </Link>
           </div>
         ) : (
           fenomenaList.map((item: any, index: number) => (
             <div 
               key={index} 
-              className="group bg-white border border-slate-200 rounded-2xl p-8 md:p-10 shadow-sm hover:shadow-xl hover:shadow-emerald-900/5 hover:border-primary/20 transition-all duration-500 fade-in-up" 
-              style={{animationDelay: `${index * 0.1}s`}}
+              className="group relative" 
             >
-              <div className="flex flex-col lg:flex-row gap-10">
-                <div className="flex-1">
-                  <div className="mb-8">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full text-[10px] font-black uppercase tracking-wider mb-4">
-                      Temuan Utama #{index + 1}
-                    </div>
-                    <h2 className="text-2xl md:text-3xl font-black text-slate-900 leading-[1.1] group-hover:text-primary transition-colors">
-                      {item.poin_penyebab}
-                    </h2>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 gap-6">
-                    <div className="relative pl-6 border-l-2 border-blue-100 hover:border-blue-400 transition-colors">
-                      <div className="absolute -left-[5px] top-0 w-2 h-2 rounded-full bg-blue-400" />
-                      <div className="flex items-center gap-2 mb-3 text-blue-600">
-                        <Info className="w-4 h-4" />
-                        <h3 className="font-bold text-xs uppercase tracking-[0.1em]">Deskripsi Mendalam</h3>
+              <div className="absolute -inset-1 bg-gradient-to-r from-emerald-500/10 to-blue-500/10 rounded-[40px] blur opacity-0 group-hover:opacity-100 transition duration-1000" />
+              <div className="relative bg-slate-900/40 backdrop-blur-xl border border-white/5 rounded-[40px] p-8 md:p-12 shadow-2xl transition-all duration-500 hover:border-emerald-500/20 overflow-hidden">
+                {/* Subtle Card Background Glow */}
+                <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+                
+                <div className="flex flex-col lg:flex-row gap-12 relative z-10">
+                  <div className="flex-1">
+                    <div className="mb-10">
+                      <div className="inline-flex items-center gap-3 px-4 py-1.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full text-[10px] font-black uppercase tracking-[0.2em] mb-6">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        Temuan Inteligensi #{index + 1}
                       </div>
-                      <p className="text-slate-600 text-sm md:text-base leading-relaxed whitespace-pre-line">
-                        {item.deskripsi || "Deskripsi belum tersedia."}
-                      </p>
+                      <h2 className="text-3xl md:text-4xl font-extrabold text-white leading-tight tracking-tight group-hover:text-emerald-400 transition-colors">
+                        {item.poin_penyebab}
+                      </h2>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 gap-8">
+                      <div className="relative pl-8 border-l border-white/10 hover:border-emerald-500/40 transition-colors py-1">
+                        <div className="absolute -left-[3px] top-0 w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
+                        <div className="flex items-center gap-3 mb-4 text-slate-400">
+                          <Info className="w-4 h-4 text-emerald-500" />
+                          <h3 className="font-black text-[10px] uppercase tracking-[0.3em]">Analisis Deskriptif</h3>
+                        </div>
+                        <p className="text-slate-300 text-sm md:text-base leading-relaxed font-medium whitespace-pre-line italic">
+                          "{item.deskripsi || "Deskripsi belum tersedia."}"
+                        </p>
+                      </div>
+
+                      <div className="relative pl-8 border-l border-white/10 hover:border-emerald-500/40 transition-colors py-1">
+                        <div className="absolute -left-[3px] top-0 w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
+                        <div className="flex items-center gap-3 mb-5 text-slate-400">
+                          <BarChart3 className="w-4 h-4 text-emerald-500" />
+                          <h3 className="font-black text-[10px] uppercase tracking-[0.3em]">Parameter & Bukti Statistik</h3>
+                        </div>
+                        <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {(Array.isArray(item.keterangan) ? item.keterangan : [item.keterangan]).map((k: string, i: number) => (
+                            <li key={i} className="flex items-start gap-4 text-xs md:text-sm text-slate-300 bg-white/5 p-4 rounded-[20px] border border-white/5 hover:bg-white/10 transition-colors">
+                              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/40 mt-1.5 shrink-0" />
+                              <span className="font-medium">{k}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     </div>
 
-                    <div className="relative pl-6 border-l-2 border-emerald-100 hover:border-emerald-400 transition-colors">
-                      <div className="absolute -left-[5px] top-0 w-2 h-2 rounded-full bg-emerald-400" />
-                      <div className="flex items-center gap-2 mb-3 text-emerald-600">
-                        <BarChart3 className="w-4 h-4" />
-                        <h3 className="font-bold text-xs uppercase tracking-[0.1em]">Bukti & Data Statistik</h3>
-                      </div>
-                      <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        {(Array.isArray(item.keterangan) ? item.keterangan : [item.keterangan]).map((k: string, i: number) => (
-                          <li key={i} className="flex items-start gap-3 text-sm text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-100">
-                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 shrink-0" />
-                            {k}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-
-                  <div className="mt-10 pt-8 border-t border-slate-100">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                      <div>
-                        <h4 className="text-[10px] text-slate-400 uppercase tracking-widest font-black mb-3">Referensi Berita & Dokumen:</h4>
-                        <div className="flex flex-wrap items-center gap-2">
-                          {Array.isArray(item.sumber) && item.sumber.length > 0 ? (
-                            item.sumber.map((s: any, i: number) => (
-                              <a 
-                                key={i} 
-                                href={s.url} 
-                                target="_blank" 
-                                rel="noopener noreferrer" 
-                                className="inline-flex items-center gap-2 text-[11px] bg-white hover:bg-slate-50 text-slate-700 font-bold py-2 px-4 rounded-xl transition-all border border-slate-200 shadow-sm active:scale-95"
-                              >
-                                <ExternalLink className="w-3 h-3 text-primary" />
-                                {s.nama}
-                              </a>
-                            ))
-                          ) : (
-                            <span className="text-slate-400 text-xs italic bg-slate-50 px-3 py-1 rounded-lg border border-dashed border-slate-200">
-                              Data rahasia/internal atau sumber tidak tersedia secara publik
-                            </span>
-                          )}
+                    <div className="mt-12 pt-8 border-t border-white/5">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+                        <div>
+                          <h4 className="text-[9px] text-slate-500 uppercase tracking-[0.4em] font-black mb-5 px-1">Verifikasi Node Sumber:</h4>
+                          <div className="flex flex-wrap items-center gap-3">
+                            {Array.isArray(item.sumber) && item.sumber.length > 0 ? (
+                              item.sumber.map((s: any, i: number) => (
+                                <a 
+                                  key={i} 
+                                  href={s.url} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer" 
+                                  className="inline-flex items-center gap-3 text-[10px] bg-slate-800/50 hover:bg-slate-800 text-slate-300 font-bold py-2.5 px-5 rounded-xl transition-all border border-white/5 shadow-xl active:scale-95 group/link"
+                                >
+                                  <ExternalLink className="w-3.5 h-3.5 text-emerald-500 group-hover/link:scale-110 transition-transform" />
+                                  <span className="uppercase tracking-widest">{s.nama}</span>
+                                </a>
+                              ))
+                            ) : (
+                              <span className="text-slate-500 text-[10px] font-black uppercase tracking-widest bg-white/5 px-4 py-2 rounded-xl border border-dashed border-white/10">
+                                Protected Internal Data
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                
-                <div className="lg:w-40 flex flex-col items-center justify-center bg-slate-50/50 p-8 rounded-2xl border border-slate-100 shrink-0">
-                  <div className="text-center mb-4">
-                    <span className="block text-[9px] text-slate-400 uppercase tracking-widest font-black leading-tight">Keakuratan<br/>Temuan</span>
-                  </div>
-                  <div className="relative group/ring">
-                    <div className="absolute inset-0 bg-emerald-500/10 rounded-full blur-xl group-hover/ring:bg-emerald-500/20 transition-all duration-700" />
-                    <AccuracyRing accuracy={item.akurasi} />
-                  </div>
-                  <div className="mt-4 text-center flex items-center justify-center">
-                    <span className={`text-lg font-black ${item.akurasi >= 0.75 ? 'text-emerald-600' : 'text-yellow-600'}`}>
-                      {Math.round(item.akurasi * 100)}%
-                    </span>
-                    <AccuracyDetail justification={item.justifikasi_akurasi} evaluasi={item.evaluasi} label="Justifikasi Temuan" />
+                  
+                  <div className="lg:w-48 flex flex-col items-center justify-center bg-slate-900/60 p-10 rounded-[32px] border border-white/5 shrink-0 shadow-inner">
+                    <div className="text-center mb-6">
+                      <span className="block text-[9px] text-slate-500 uppercase tracking-[0.3em] font-black leading-tight">Neural<br/>Confidence</span>
+                    </div>
+                    <div className="relative group/ring">
+                      <div className="absolute inset-0 bg-emerald-500/20 rounded-full blur-2xl opacity-40 group-hover/ring:opacity-70 transition-all duration-700" />
+                      <AccuracyRing accuracy={item.akurasi} />
+                    </div>
+                    <div className="mt-6 text-center flex items-center justify-center gap-2">
+                      <span className={`text-2xl font-black ${item.akurasi >= 0.75 ? 'text-emerald-400' : 'text-amber-400'}`}>
+                        {Math.round(item.akurasi * 100)}%
+                      </span>
+                      <AccuracyDetail justification={item.justifikasi_akurasi} evaluasi={item.evaluasi} label="Justifikasi Temuan" />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -170,12 +181,13 @@ export default async function AnalisisResultPage({ params }: { params: Promise<{
         )}
       </div>
 
-      <div className="mt-16 text-center">
-        <Link href="/" className="inline-flex items-center gap-3 bg-white hover:bg-slate-50 text-slate-900 font-black py-4 px-10 rounded-2xl transition-all border-2 border-slate-200 shadow-xl shadow-slate-200/50 hover:shadow-emerald-900/10 hover:border-primary/30 active:scale-95">
-          <BarChart3 className="w-5 h-5 text-primary" />
-          Lakukan Analisis Fenomena Baru
+      <div className="mt-20 text-center">
+        <Link href="/" className="inline-flex items-center gap-4 bg-slate-900/50 hover:bg-slate-900 text-white font-black py-5 px-12 rounded-2xl transition-all border border-white/5 shadow-[0_0_40px_rgba(0,0,0,0.3)] hover:border-emerald-500/30 hover:shadow-emerald-900/10 active:scale-95 group">
+          <BarChart3 className="w-6 h-6 text-emerald-500 group-hover:scale-110 transition-transform" />
+          <span className="uppercase tracking-[0.3em] text-xs">Mulai Investigasi Baru</span>
         </Link>
       </div>
     </div>
   );
 }
+

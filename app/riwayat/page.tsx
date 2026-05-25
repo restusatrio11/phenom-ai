@@ -29,22 +29,27 @@ export default async function RiwayatPage() {
   return (
     <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-3 mb-3">
-            <div className="p-2 bg-emerald-500/10 rounded-lg shrink-0">
-              <History className="w-5 h-5 lg:w-6 lg:h-6 text-emerald-500" />
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="p-3 bg-emerald-500/10 rounded-2xl border border-emerald-500/20 shadow-lg shadow-emerald-900/10 shrink-0">
+              <History className="w-6 h-6 text-emerald-400" />
             </div>
-            <h1 className="text-2xl lg:text-3xl font-black text-slate-900 tracking-tight">Riwayat Analisis</h1>
+            <h1 className="text-3xl lg:text-4xl font-extrabold text-white tracking-tight">Arsip <span className="text-emerald-500">Investigasi</span></h1>
           </div>
-          <p className="text-slate-400 max-w-2xl">
-            Pantau dan kelola seluruh hasil pemindaian fenomena yang telah dilakukan sebelumnya. 
-            Gunakan fitur pencarian untuk menemukan data spesifik dengan cepat.
+          <p className="text-slate-400 max-w-2xl font-medium leading-relaxed">
+            Pantau dan kelola seluruh hasil pemindaian fenomena yang telah dilakukan sebelumnya dalam basis data intelijen terenkripsi.
           </p>
         </div>
       </div>
 
-      <RiwayatTable data={formattedRiwayat} />
+      <div className="relative group">
+        <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 rounded-[32px] blur opacity-20 group-hover:opacity-40 transition duration-1000" />
+        <div className="relative bg-slate-900/40 backdrop-blur-2xl border border-white/5 rounded-[32px] p-1 shadow-2xl">
+          <RiwayatTable data={formattedRiwayat} />
+        </div>
+      </div>
     </div>
   );
 }
+
 

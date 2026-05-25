@@ -37,7 +37,7 @@ export default async function RootLayout({
 
   return (
     <html lang="id" suppressHydrationWarning>
-      <body className={`${lexend.className} min-h-screen bg-[#f8faf9] text-slate-800 antialiased`}>
+      <body className={`${lexend.className} min-h-screen bg-[#020617] text-slate-200 antialiased`}>
         <LoadingProvider>
           <GlobalLoading />
           <ToastProvider>

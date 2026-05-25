@@ -77,109 +77,115 @@ function LoginContent() {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center p-4 relative overflow-hidden bg-[#f8faf9]">
+    <div className="min-h-screen w-full flex items-center justify-center p-4 relative overflow-hidden bg-[#020617]">
       {/* Animated Grid Background */}
       <div 
-        className="absolute inset-0 z-0"
+        className="absolute inset-0 z-0 opacity-20"
         style={{
           backgroundImage: `
-            linear-gradient(to right, rgba(16, 185, 129, 0.08) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(16, 185, 129, 0.08) 1px, transparent 1px)
+            linear-gradient(to right, rgba(16, 185, 129, 0.2) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(16, 185, 129, 0.2) 1px, transparent 1px)
           `,
-          backgroundSize: '40px 40px'
+          backgroundSize: '50px 50px'
         }}
       />
       
-      {/* Background Gradient Pulse */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-emerald-100/40 rounded-full blur-[120px] animate-pulse z-0" />
+      {/* Background Gradient Glows */}
+      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-[120px] animate-pulse z-0" />
+      <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-blue-500/10 rounded-full blur-[100px] animate-pulse z-0" />
 
-      <div className="w-full max-w-[450px] relative z-10 animate-in fade-in zoom-in duration-700">
-        <div className="bg-white/90 backdrop-blur-md border-[1.5px] border-dashed border-emerald-200/80 rounded-[24px] p-10 shadow-[0_20px_60px_rgba(0,0,0,0.06)] border-spacing-4">
+      <div className="w-full max-w-[460px] relative z-10 animate-in fade-in zoom-in duration-1000">
+        <div className="bg-slate-900/40 backdrop-blur-xl border border-emerald-500/20 rounded-[32px] p-10 shadow-[0_0_50px_rgba(0,0,0,0.3)] relative overflow-hidden">
+          {/* Subtle Inner Glow */}
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-blue-500/5 pointer-events-none" />
           
           {/* Header Icon */}
-          <div className="flex justify-center mb-6">
-            <div className="w-20 h-20 rounded-2xl overflow-hidden border border-emerald-100 shadow-xl shadow-emerald-500/10">
-              <img src="/logo.png" alt="Logo" className="w-full h-full object-cover" />
+          <div className="flex justify-center mb-8">
+            <div className="relative group">
+              <div className="absolute inset-0 bg-emerald-500 blur-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-500" />
+              <div className="relative w-24 h-24 rounded-3xl overflow-hidden border-2 border-emerald-500/30 shadow-2xl rotate-3 group-hover:rotate-0 transition-transform duration-500">
+                <img src="/logo.png" alt="Phenom AI Logo" className="w-full h-full object-cover" />
+              </div>
             </div>
           </div>
 
           <div className="text-center mb-10">
-            <h1 className="text-3xl font-bold tracking-tight text-emerald-700 mb-1">
+            <h1 className="text-4xl font-extrabold tracking-tight bg-gradient-to-b from-white to-slate-400 bg-clip-text text-transparent mb-2">
               Phenom AI
             </h1>
-            <p className="text-[10px] font-bold text-slate-400 tracking-[0.2em] uppercase">
-              Universal Phenomenon Analysis System
+            <p className="text-[10px] font-black text-emerald-500 tracking-[0.4em] uppercase">
+              Sistem Analisis Fenomena Universal
             </p>
           </div>
 
           {errorMsg && (
-            <div className="mb-8 p-4 bg-red-50 border border-dashed border-red-200 rounded-xl flex items-start gap-3 animate-in slide-in-from-top-2">
-              <CircleAlert className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
-              <p className="text-[11px] text-red-600 font-medium leading-relaxed">{errorMsg}</p>
+            <div className="mb-8 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-start gap-3 animate-in slide-in-from-top-4">
+              <CircleAlert className="w-5 h-5 text-red-400 shrink-0" />
+              <p className="text-xs text-red-200 font-medium leading-relaxed">{errorMsg}</p>
             </div>
           )}
 
-          {/* Tab Switcher */}
-          <div className="flex border-b border-slate-100 mb-8">
+          {/* Tab Switcher - Segmented Control Style */}
+          <div className="flex p-1 bg-slate-800/50 rounded-2xl mb-10 border border-slate-700/50">
             <button 
               onClick={() => setActiveTab('sso')}
-              className={`flex-1 pb-3 text-xs font-bold transition-all ${activeTab === 'sso' ? 'text-emerald-600 border-b-2 border-emerald-500' : 'text-slate-400 hover:text-slate-600'}`}
+              className={`flex-1 py-3 px-4 rounded-xl text-xs font-bold transition-all duration-300 flex items-center justify-center gap-2 ${activeTab === 'sso' ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/40' : 'text-slate-400 hover:text-slate-200'}`}
             >
-              SSO BPS OTP
+              <Smartphone className="w-4 h-4" />
+              SSO BPS Sumut
             </button>
             <button 
               onClick={() => setActiveTab('ordinary')}
-              className={`flex-1 pb-3 text-xs font-bold transition-all ${activeTab === 'ordinary' ? 'text-emerald-600 border-b-2 border-emerald-500' : 'text-slate-400 hover:text-slate-600'}`}
+              className={`flex-1 py-3 px-4 rounded-xl text-xs font-bold transition-all duration-300 flex items-center justify-center gap-2 ${activeTab === 'ordinary' ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/40' : 'text-slate-400 hover:text-slate-200'}`}
             >
-              AKUN BIASA
+              <Briefcase className="w-4 h-4" />
+              Akun Internal
             </button>
           </div>
 
           {activeTab === 'sso' ? (
-            <div className="space-y-6">
-              <div className="text-center px-4 mb-2">
-                <Smartphone className="w-10 h-10 text-emerald-200 mx-auto mb-4" />
-                <p className="text-xs text-slate-500 leading-relaxed">
-                  Gunakan otentikasi Single Sign-On (SSO) BPS Sumatera Utara untuk akses cepat melalui sistem OTP.
+            <div className="space-y-8">
+              <div className="text-center px-6">
+                <p className="text-sm text-slate-300 leading-relaxed">
+                  Akses instan menggunakan akun Single Sign-On BPS Sumatera Utara.
                 </p>
               </div>
               <button 
                 onClick={handleSSOLogin}
                 disabled={loading}
-                className="w-full relative group overflow-hidden bg-[#065f46] hover:bg-[#064e3b] text-white py-4 px-6 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-3 shadow-lg shadow-emerald-900/10 active:scale-[0.98]"
+                className="w-full group relative py-4 px-6 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white rounded-2xl font-bold text-base transition-all duration-300 shadow-xl shadow-emerald-900/20 active:scale-[0.98] disabled:opacity-50"
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_2s_infinite] pointer-events-none" />
-                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <LogIn className="w-5 h-5" />}
-                Authorize via SSO
+                <div className="flex items-center justify-center gap-3">
+                  {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : <LogIn className="w-6 h-6" />}
+                  <span>Masuk via SSO BPS</span>
+                </div>
               </button>
             </div>
           ) : (
-            <form onSubmit={handleOrdinaryLogin} className="space-y-10">
-              <div className="space-y-8">
-                <div className="relative group">
-                  <div className="flex items-center gap-3 text-slate-500 mb-1 group-focus-within:text-emerald-600 transition-colors">
-                    <Briefcase className="w-4 h-4" />
-                    <span className="text-[10px] font-bold uppercase tracking-wider">Email / Investigator ID</span>
+            <form onSubmit={handleOrdinaryLogin} className="space-y-8">
+              <div className="space-y-6">
+                <div className="relative">
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 text-slate-500">
+                    <Briefcase className="w-5 h-5" />
                   </div>
                   <input 
                     type="email" 
-                    placeholder="nama@email.com"
-                    className="w-full bg-transparent border-b border-slate-200 py-3 text-sm focus:outline-none focus:border-emerald-500 transition-all placeholder:text-slate-400 font-medium text-slate-800"
+                    placeholder="ID Investigator / Email"
+                    className="w-full bg-transparent border-b border-slate-700 pl-8 py-3 text-base focus:outline-none focus:border-emerald-500 transition-all placeholder:text-slate-600 text-white font-medium"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
                   />
                 </div>
 
-                <div className="relative group">
-                  <div className="flex items-center gap-3 text-slate-500 mb-1 group-focus-within:text-emerald-600 transition-colors">
-                    <Key className="w-4 h-4" />
-                    <span className="text-[10px] font-bold uppercase tracking-wider">Password / Access Key</span>
+                <div className="relative">
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 text-slate-500">
+                    <Key className="w-5 h-5" />
                   </div>
                   <input 
                     type="password" 
-                    placeholder="••••••••••••"
-                    className="w-full bg-transparent border-b border-slate-200 py-3 text-sm focus:outline-none focus:border-emerald-500 transition-all placeholder:text-slate-400 font-medium tracking-widest text-slate-800"
+                    placeholder="Kata Sandi Akses"
+                    className="w-full bg-transparent border-b border-slate-700 pl-8 py-3 text-base focus:outline-none focus:border-emerald-500 transition-all placeholder:text-slate-600 text-white font-medium tracking-widest"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
@@ -187,34 +193,53 @@ function LoginContent() {
                 </div>
               </div>
 
+              <div className="flex items-center justify-between">
+                <label className="flex items-center gap-2 cursor-pointer group">
+                  <input type="checkbox" className="w-4 h-4 rounded border-slate-700 bg-slate-800 text-emerald-500 focus:ring-emerald-500 focus:ring-offset-slate-900" />
+                  <span className="text-xs text-slate-400 group-hover:text-slate-300 transition-colors">Ingat saya</span>
+                </label>
+                <button type="button" className="text-xs font-bold text-emerald-500 hover:text-emerald-400 transition-colors">
+                  Lupa Sandi?
+                </button>
+              </div>
+
               <button 
                 type="submit" 
                 disabled={loading}
-                className="w-full relative group overflow-hidden bg-[#065f46] hover:bg-[#064e3b] text-white py-4 px-6 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-3 shadow-lg shadow-emerald-900/10 active:scale-[0.98]"
+                className="w-full group relative py-4 px-6 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white rounded-2xl font-bold text-base transition-all duration-300 shadow-xl shadow-emerald-900/20 active:scale-[0.98] disabled:opacity-50"
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_2s_infinite] pointer-events-none" />
-                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <LogIn className="w-5 h-5" />}
-                Authorize Access
+                <div className="flex items-center justify-center gap-3">
+                  {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : <LogIn className="w-6 h-6" />}
+                  <span>Akses Dashboard</span>
+                </div>
               </button>
             </form>
           )}
 
-          <div className="mt-10 pt-6 border-t border-dashed border-slate-100 flex items-center justify-between">
-            <button className="flex items-center gap-2 text-[10px] font-bold text-slate-400 hover:text-emerald-600 transition-colors">
-              <RefreshCcw className="w-3.5 h-3.5" />
-              RESET CREDENTIALS
+          <div className="mt-12 pt-8 border-t border-slate-800 flex items-center justify-center gap-10">
+            <button className="flex items-center gap-2 text-[11px] font-bold text-slate-500 hover:text-emerald-400 transition-all group">
+              <RefreshCcw className="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" />
+              RESET KREDENSIAL
             </button>
-            <button className="flex items-center gap-2 text-[10px] font-bold text-slate-400 hover:text-emerald-600 transition-colors">
-              <HelpCircle className="w-3.5 h-3.5" />
-              SYSTEM SUPPORT
+            <button className="flex items-center gap-2 text-[11px] font-bold text-slate-500 hover:text-emerald-400 transition-all group">
+              <HelpCircle className="w-4 h-4" />
+              BANTUAN SISTEM
             </button>
           </div>
         </div>
 
-        <p className="text-center mt-8 text-[10px] text-slate-400 font-bold tracking-[0.3em] opacity-40">
-          PROPRIETARY SYSTEM • RESTRICTED ACCESS
-        </p>
+        <div className="text-center mt-10 space-y-2">
+          <p className="text-[10px] text-slate-500 font-black tracking-[0.5em] uppercase opacity-50">
+            PROPRIETARY SYSTEM • RESTRICTED ACCESS
+          </p>
+          <div className="flex justify-center items-center gap-2 text-[10px] text-slate-600 font-bold">
+            <span>© 2026 Phenom AI Team</span>
+            <span className="w-1 h-1 rounded-full bg-slate-800" />
+            <span>Sumatera Utara</span>
+          </div>
+        </div>
       </div>
+
 
       <style jsx global>{`
         @keyframes shimmer {

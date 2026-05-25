@@ -80,7 +80,7 @@ export default function Sidebar({
       )}
 
       <aside className={`
-        fixed left-0 top-0 h-screen bg-white border-r border-slate-100 z-50 flex flex-col shadow-[20px_0_60px_rgba(0,0,0,0.01)]
+        fixed left-0 top-0 h-screen bg-slate-900/40 backdrop-blur-2xl border-r border-white/5 z-50 flex flex-col shadow-2xl
         transition-all duration-500 ease-in-out
         ${isCollapsed ? 'w-24' : 'w-72'}
         ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
@@ -88,20 +88,23 @@ export default function Sidebar({
         {/* Toggle Button for Desktop */}
         <button 
           onClick={onToggle}
-          className="hidden lg:flex absolute -right-4 top-10 w-8 h-8 bg-white border border-slate-100 rounded-full items-center justify-center shadow-lg hover:bg-slate-50 transition-all z-50 text-slate-400 hover:text-slate-900"
+          className="hidden lg:flex absolute -right-4 top-10 w-8 h-8 bg-slate-800 border border-white/10 rounded-full items-center justify-center shadow-lg hover:bg-slate-700 transition-all z-50 text-slate-400 hover:text-emerald-400"
         >
           {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
         </button>
 
         <div className={`transition-all duration-500 flex-1 overflow-y-auto custom-scrollbar ${isCollapsed ? 'p-6' : 'p-10'}`}>
           <div className={`flex items-center gap-4 transition-all duration-500 ${isCollapsed ? 'justify-center mb-10' : 'mb-14'}`}>
-            <div className="w-12 h-12 rounded-xl overflow-hidden shadow-2xl shadow-emerald-200 shrink-0">
-              <img src="/logo.png" alt="Phenom Logo" className="w-full h-full object-cover" />
+            <div className="relative group">
+              <div className="absolute inset-0 bg-emerald-500 blur-lg opacity-20 group-hover:opacity-40 transition-opacity" />
+              <div className="relative w-12 h-12 rounded-xl overflow-hidden border border-emerald-500/20 shadow-2xl shrink-0">
+                <img src="/logo.png" alt="Phenom Logo" className="w-full h-full object-cover" />
+              </div>
             </div>
             {!isCollapsed && (
               <div className="animate-in fade-in duration-700">
-                <h1 className="text-xl font-black text-slate-900 leading-none tracking-tight">PHENOM</h1>
-                <p className="text-[10px] font-bold text-emerald-600/50 tracking-[0.2em] uppercase mt-1.5">Intelligence Suite</p>
+                <h1 className="text-xl font-black text-white leading-none tracking-tight">PHENOM</h1>
+                <p className="text-[10px] font-bold text-emerald-500/60 tracking-[0.2em] uppercase mt-1.5">Intelligence Suite</p>
               </div>
             )}
           </div>
@@ -111,7 +114,7 @@ export default function Sidebar({
               <div key={gIndex} className="space-y-4">
                 {!isCollapsed && (
                   <div className="px-6">
-                    <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.3em]">{group.title}</span>
+                    <span className="text-[9px] font-black text-slate-500 uppercase tracking-[0.3em]">{group.title}</span>
                   </div>
                 )}
                 <div className="space-y-1">
@@ -124,14 +127,14 @@ export default function Sidebar({
                         isCollapsed ? 'justify-center px-0' : 'px-6'
                       } ${
                         pathname === item.href 
-                        ? 'bg-emerald-50 text-emerald-700 shadow-sm' 
-                        : 'text-slate-400 hover:text-slate-900 hover:bg-slate-50'
+                        ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/10 shadow-lg shadow-emerald-900/10' 
+                        : 'text-slate-500 hover:text-white hover:bg-white/5'
                       }`}
                     >
-                      <item.icon className={`w-5 h-5 transition-transform duration-500 group-hover:scale-110 shrink-0 ${pathname === item.href ? 'text-emerald-600' : 'text-slate-300'}`} />
+                      <item.icon className={`w-5 h-5 transition-transform duration-500 group-hover:scale-110 shrink-0 ${pathname === item.href ? 'text-emerald-400' : 'text-slate-600'}`} />
                       {!isCollapsed && <span className="animate-in fade-in duration-500">{item.name}</span>}
                       {pathname === item.href && !isCollapsed && (
-                        <div className="absolute right-4 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-emerald-600 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
                       )}
                     </Link>
                   ))}
@@ -145,17 +148,17 @@ export default function Sidebar({
           <Link 
             href="/pengaturan"
             onClick={() => setIsMobileOpen(false)}
-            className={`flex items-center gap-5 py-3 text-[10px] font-bold uppercase tracking-widest text-slate-400 hover:text-slate-900 transition-all group ${
+            className={`flex items-center gap-5 py-3 text-[10px] font-bold uppercase tracking-widest text-slate-500 hover:text-emerald-400 transition-all group ${
               isCollapsed ? 'justify-center px-0' : 'px-6'
             }`}
           >
-            <Settings className="w-5 h-5 text-slate-300 group-hover:rotate-45 transition-transform duration-700 shrink-0" />
+            <Settings className="w-5 h-5 text-slate-600 group-hover:rotate-45 transition-transform duration-700 shrink-0" />
             {!isCollapsed && <span className="animate-in fade-in duration-500">Pengaturan</span>}
           </Link>
           <Link 
             href="/investigate"
             onClick={() => setIsMobileOpen(false)}
-            className={`w-full bg-slate-900 hover:bg-emerald-600 text-white font-bold transition-all duration-500 flex items-center justify-center gap-4 shadow-2xl shadow-slate-200 hover:shadow-emerald-200 ${
+            className={`w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold transition-all duration-500 flex items-center justify-center gap-4 shadow-xl shadow-emerald-900/20 ${
               isCollapsed ? 'h-12 w-12 mx-auto rounded-xl p-0' : 'py-5 px-6 rounded-xl text-[10px] uppercase tracking-[0.3em]'
             }`}
           >

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { X, AlertTriangle } from 'lucide-react';
+import { X, AlertTriangle, Shield } from 'lucide-react';
 
 interface ModalProps {
   isOpen: boolean;
@@ -44,29 +44,32 @@ export default function Modal({
         onClick={onClose}
       />
       
-      <div className="relative w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl animate-in zoom-in-95 duration-300 overflow-hidden">
-        <div className="p-6">
-          <div className="flex items-center gap-4 mb-4">
+      <div className="relative w-full max-w-md bg-[#020617]/90 backdrop-blur-3xl border border-white/10 rounded-[32px] shadow-[0_0_80px_rgba(0,0,0,0.8)] animate-in zoom-in-95 duration-300 overflow-hidden">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+        
+        <div className="p-8 relative z-10">
+          <div className="flex items-center gap-5 mb-6">
             <div className={`
-              p-3 rounded-xl
-              ${type === 'danger' ? 'bg-red-500/10 text-red-500' : 'bg-emerald-500/10 text-emerald-500'}
+              p-4 rounded-2xl border
+              ${type === 'danger' ? 'bg-red-500/10 text-red-400 border-red-500/20' : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'}
             `}>
-              {type === 'danger' ? <AlertTriangle className="w-6 h-6" /> : <AlertTriangle className="w-6 h-6 rotate-180" />}
+              {type === 'danger' ? <AlertTriangle className="w-6 h-6" /> : <Shield className="w-6 h-6" />}
             </div>
             <div>
-              <h3 className="text-xl font-bold text-slate-100">{title}</h3>
+              <h3 className="text-xl font-extrabold text-white tracking-tight">{title}</h3>
+              <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-1">System Confirmation</p>
             </div>
           </div>
           
-          <p className="text-slate-400 leading-relaxed">
+          <p className="text-slate-400 leading-relaxed font-medium">
             {message}
           </p>
         </div>
         
-        <div className="flex items-center justify-end gap-3 px-6 py-4 bg-slate-950/50">
+        <div className="flex items-center justify-end gap-4 px-8 py-6 bg-white/5 border-t border-white/5 relative z-10">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-200 transition-colors"
+            className="px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest text-slate-500 hover:text-white transition-colors"
           >
             {cancelText}
           </button>
@@ -76,10 +79,10 @@ export default function Modal({
               onClose();
             }}
             className={`
-              px-6 py-2 rounded-xl text-sm font-bold transition-all
+              px-8 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all active:scale-95 shadow-2xl
               ${type === 'danger' 
-                ? 'bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-500/20' 
-                : 'bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/20'}
+                ? 'bg-red-600 hover:bg-red-500 text-white shadow-red-900/20' 
+                : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-900/20'}
             `}
           >
             {confirmText}
