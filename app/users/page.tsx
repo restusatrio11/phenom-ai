@@ -109,7 +109,7 @@ export default function UserManagementPage() {
         <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500/10 to-blue-500/10 rounded-[40px] blur opacity-20 group-hover:opacity-30 transition duration-1000" />
         <div className="relative bg-slate-900/40 backdrop-blur-2xl border border-white/5 rounded-[40px] overflow-hidden shadow-2xl">
           <div className="overflow-x-auto custom-scrollbar">
-            <table className="w-full text-left border-collapse">
+            <table className="w-full text-left border-collapse min-w-[800px]">
               <thead>
                 <tr className="bg-white/5 border-b border-white/5 text-slate-500 text-[10px] tracking-[0.25em] font-black uppercase">
                   <th className="px-10 py-7">Identitas Personil</th>

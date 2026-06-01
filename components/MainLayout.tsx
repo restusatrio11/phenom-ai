@@ -24,11 +24,11 @@ export default function MainLayout({
         isCollapsed={isCollapsed} 
         onToggle={() => setIsCollapsed(!isCollapsed)} 
       />
-      <div className={`flex-1 flex flex-col transition-all duration-500 ${
+      <div className={`flex-1 flex flex-col min-w-0 transition-all duration-500 ${
         (user && !isLoginPage) ? (isCollapsed ? 'lg:pl-24' : 'lg:pl-72') : ''
       }`}>
         <Header user={user} />
-        <main className="flex-1">
+        <main className="flex-1 min-w-0">
           {children}
         </main>
       </div>
